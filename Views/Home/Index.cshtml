@@ -1,0 +1,23 @@
+﻿@{
+    ViewData["Title"] = "Главная";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Добро пожаловать в UniversityApp!</h1>
+    <p>Управление преподавателями, студентами, дисциплинами и оценками.</p>
+
+    <div class="row mt-5">
+        <div class="col-md-3">
+            <a class="btn btn-primary btn-lg" asp-controller="Teacher" asp-action="Index">Преподаватели</a>
+        </div>
+        <div class="col-md-3">
+            <a class="btn btn-success btn-lg" asp-controller="Students" asp-action="Index">Студенты</a>
+        </div>
+        <div class="col-md-3">
+            <a class="btn btn-warning btn-lg" asp-controller="Course" asp-action="Index">Дисциплины</a>
+        </div>
+        <div class="col-md-3">
+            <a class="btn btn-danger btn-lg" asp-controller="Grade" asp-action="Index">Оценки</a>
+        </div>
+    </div>
+</div>

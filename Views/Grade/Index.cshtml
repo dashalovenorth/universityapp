@@ -1,0 +1,35 @@
+@model IEnumerable<UniversityApp.Models.Grade>
+
+@{
+    ViewData["Title"] = "Оценки";
+}
+
+<h2>Оценки</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Добавить оценку</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Студент</th>
+            <th>Дисциплина</th>
+            <th>Оценка</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Student?.Name</td>
+                <td>@item.Course?.Title</td>
+                <td>@item.Score</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">Редактировать</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Удалить</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

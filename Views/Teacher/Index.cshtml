@@ -1,0 +1,23 @@
+@model IEnumerable<UniversityApp.Models.Teacher>
+
+<h2>Преподаватели</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Имя</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Редактировать</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<a asp-action="Create">Добавить преподавателя</a>

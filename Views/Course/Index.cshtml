@@ -1,0 +1,33 @@
+@model IEnumerable<UniversityApp.Models.Course>
+
+@{
+    ViewData["Title"] = "Дисциплины";
+}
+
+<h2>Дисциплины</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Добавить дисциплину</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Название</th>
+            <th>Преподаватель</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Title</td>
+                <td>@item.Teacher?.Name</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">Редактировать</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Удалить</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
