@@ -9,3 +9,4 @@ namespace UniversityApp.Models
         public List<Grade> Grades { get; set; } = new List<Grade>();
     }
 }
+

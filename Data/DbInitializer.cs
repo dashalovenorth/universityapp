@@ -9,7 +9,7 @@ public static class DbInitializer
 
         if (context.Teachers.Any())
         {
-            return; // База данных уже инициализирована
+            return; 
         }
 
         var teachers = new Teacher[]

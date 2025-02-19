@@ -106,6 +106,7 @@
 /Users/user/Desktop/UniversityApp/obj/Debug/net9.0/UniversityApp.MvcApplicationPartsAssemblyInfo.cache
 /Users/user/Desktop/UniversityApp/obj/Debug/net9.0/UniversityApp.RazorAssemblyInfo.cache
 /Users/user/Desktop/UniversityApp/obj/Debug/net9.0/UniversityApp.RazorAssemblyInfo.cs
+/Users/user/Desktop/UniversityApp/obj/Debug/net9.0/UniversityApp.sourcelink.json
 /Users/user/Desktop/UniversityApp/obj/Debug/net9.0/scopedcss/Views/Shared/_Layout.cshtml.rz.scp.css
 /Users/user/Desktop/UniversityApp/obj/Debug/net9.0/scopedcss/bundle/UniversityApp.styles.css
 /Users/user/Desktop/UniversityApp/obj/Debug/net9.0/scopedcss/projectbundle/UniversityApp.bundle.scp.css
