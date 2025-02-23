@@ -1,18 +1,17 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using UniversityApp.Models;
-using UniversityApp.Data;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using UniversityApp.Data;
+using UniversityApp.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace UniversityApp.Controllers
 {
-    //[Authorize] 
-    public class StudentsController : Controller
+    [Authorize(Roles = "Admin,Teacher")]
+    public class StudentController : Controller
     {
         private readonly UniversityContext _context;
 
-        public StudentsController(UniversityContext  context)
+        public StudentController(UniversityContext context)
         {
             _context = context;
         }
@@ -23,38 +22,56 @@ namespace UniversityApp.Controllers
             return View(await _context.Students.ToListAsync());
         }
 
-        // GET: Students/Create
-        [Authorize(Roles = "Admin")]
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Students/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")]
-        public IActionResult Create(Student student)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Students.Add(student);
-                _context.SaveChanges();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(student);
-        }
-
-        // GET: Students/Edit/5
-        [Authorize(Roles = "Admin")]
-        public IActionResult Edit(int? id)
+        // GET: Student/Details/5
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var student = _context.Students.Find(id);
+            var student = await _context.Students
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (student == null)
+            {
+                return NotFound();
+            }
+
+            return View(student);
+        }
+
+        // GET: Student/Create
+        [Authorize(Roles = "Admin")]
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: Student/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Create(Student student)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(student);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(student);
+        }
+
+        // GET: Student/Edit/5
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var student = await _context.Students.FindAsync(id);
             if (student == null)
             {
                 return NotFound();
@@ -62,11 +79,11 @@ namespace UniversityApp.Controllers
             return View(student);
         }
 
-        // POST: Students/Edit/5
+        // POST: Student/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public IActionResult Edit(int id, Student student)
+        public async Task<IActionResult> Edit(int id, Student student)
         {
             if (id != student.Id)
             {
@@ -75,40 +92,66 @@ namespace UniversityApp.Controllers
 
             if (ModelState.IsValid)
             {
-                _context.Update(student);
-                _context.SaveChanges();
+                try
+                {
+                    _context.Update(student);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!StudentExists(student.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
                 return RedirectToAction(nameof(Index));
             }
             return View(student);
         }
 
-        // GET: Students/Delete/5
+        // GET: Student/Delete/5
         [Authorize(Roles = "Admin")]
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var student = _context.Students.Find(id);
+            var student = await _context.Students
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (student == null)
             {
                 return NotFound();
             }
+
             return View(student);
         }
 
-        // POST: Students/Delete/5
+        // POST: Student/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public IActionResult DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var student = _context.Students.Find(id);
-            _context.Students.Remove(student!);
-            _context.SaveChanges();
+            var student = await _context.Students.FindAsync(id);
+            if (student == null)
+            {
+                return NotFound();
+            }
+
+            _context.Students.Remove(student);
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        private bool StudentExists(int id)
+        {
+            return _context.Students.Any(e => e.Id == id);
         }
     }
 }

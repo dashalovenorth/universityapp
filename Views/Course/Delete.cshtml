@@ -1,0 +1,16 @@
+@model UniversityApp.Models.Course
+@{
+    ViewData["Title"] = "Удалить дисциплину";
+}
+
+<h2>Удалить дисциплину</h2>
+
+<form asp-action="Delete">
+    <input type="hidden" asp-for="Id" />
+    <input type="submit" value="Delete" class="btn btn-danger" /> |
+    <a asp-action="Index">Back to List</a>
+</form>
+
+<div>
+    <a asp-action="Index" class="btn btn-secondary">Назад к списку</a>
+</div>

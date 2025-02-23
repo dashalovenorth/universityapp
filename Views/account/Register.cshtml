@@ -1,10 +1,6 @@
-@model UniversityApp.Models.Register
+@model UniversityApp.Models.RegisterViewModel
 
-@{
-    ViewData["Title"] = "Регистрация";
-}
-
-<h2>@ViewData["Title"]</h2>
+<h2>Register</h2>
 
 <form asp-action="Register" method="post">
     <div asp-validation-summary="All" class="text-danger"></div>
@@ -27,5 +23,5 @@
         <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
     </div>
 
-    <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+    <button type="submit" class="btn btn-primary">Register</button>
 </form>

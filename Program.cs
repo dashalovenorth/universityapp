@@ -1,34 +1,28 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using UniversityApp.Data;
+using UniversityApp.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Настройка контекста базы данных
+
 builder.Services.AddDbContext<UniversityContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Настройка Identity
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
-    .AddRoles<IdentityRole>() // Добавьте поддержку ролей
-    .AddEntityFrameworkStores<UniversityContext>();
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+    .AddEntityFrameworkStores<UniversityContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+    options.AddPolicy("TeacherOnly", policy => policy.RequireRole("Teacher"));
+    options.AddPolicy("StudentOnly", policy => policy.RequireRole("Student"));
+});
 
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
-
-// Создание ролей при запуске приложения
-using (var scope = app.Services.CreateScope())
-{
-    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-    var roles = new[] { "Admin", "Teacher", "Student" };
-
-    foreach (var role in roles)
-    {
-        if (!await roleManager.RoleExistsAsync(role))
-            await roleManager.CreateAsync(new IdentityRole(role));
-    }
-}
 
 if (!app.Environment.IsDevelopment())
 {
@@ -38,12 +32,15 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
 app.UseRouting();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
 
 app.Run();

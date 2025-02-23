@@ -1,37 +1,32 @@
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using UniversityApp.Models;
-using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
 
 namespace UniversityApp.Controllers
 {
-    [Authorize(Roles = "Admin")]
-    public class AccountController : Controller
+    public class AuthController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public AccountController(
+        public AuthController(
             UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager,
-            RoleManager<IdentityRole> roleManager)
+            SignInManager<ApplicationUser> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _roleManager = roleManager;
         }
 
-        // GET: Account/Register
+        // GET: /Auth/Register
+        [HttpGet]
         public IActionResult Register()
         {
             return View();
         }
 
-        // POST: Account/Register
+        // POST: /Auth/Register
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
             if (ModelState.IsValid)
@@ -41,17 +36,7 @@ namespace UniversityApp.Controllers
 
                 if (result.Succeeded)
                 {
-                    // Проверяем, существует ли роль
-                    var roleExists = await _roleManager.RoleExistsAsync(model.Role!);
-                    if (!roleExists)
-                    {
-                        // Создаем роль, если она не существует
-                        await _roleManager.CreateAsync(new IdentityRole(model.Role!));
-                    }
-
-                    // Добавляем пользователя в роль
-                    await _userManager.AddToRoleAsync(user, model.Role!);
-
+                    await _signInManager.SignInAsync(user, isPersistent: false);
                     return RedirectToAction("Index", "Home");
                 }
 
@@ -64,17 +49,15 @@ namespace UniversityApp.Controllers
             return View(model);
         }
 
-        // GET: Account/Login
-        [AllowAnonymous]
+        // GET: /Auth/Login
+        [HttpGet]
         public IActionResult Login()
         {
             return View();
         }
 
-        // POST: Account/Login
+        // POST: /Auth/Login
         [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (ModelState.IsValid)
@@ -92,9 +75,8 @@ namespace UniversityApp.Controllers
             return View(model);
         }
 
-        // POST: Account/Logout
+        // POST: /Auth/Logout
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
